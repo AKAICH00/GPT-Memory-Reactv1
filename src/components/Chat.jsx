@@ -1,21 +1,20 @@
 // Chat.jsx
 
 import React, { useState, useEffect } from 'react';
-import { supabase } from '../api/Database';
 
 function Chat() {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
 
-  // Fetch messages from database on component mount
+  // Fetch messages from server on component mount
   useEffect(() => {
     fetchMessages();
   }, []);
 
   const fetchMessages = async () => {
-    const { data: messages, error } = await supabase.from('messages').select('*').order('id', true);
-    if (error) console.log('Error fetching messages: ', error);
-    else setMessages(messages);
+    const response = await fetch('/api/messages');
+    const messages = await response.json();
+    setMessages(messages);
   };
 
   const sendMessage = async (e) => {
@@ -31,9 +30,6 @@ function Chat() {
 
     const botMessage = { content: data.choices[0].text, timestamp: new Date() };
     setMessages((messages) => [...messages, botMessage]);
-
-    // Save both messages to the database
-    await supabase.from('messages').insert([message, botMessage]);
   };
 
   return (
