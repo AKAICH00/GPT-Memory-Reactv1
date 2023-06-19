@@ -1,5 +1,6 @@
+// Chat.jsx
+
 import React, { useState, useEffect } from 'react';
-import api from '../api/api';
 import { supabase } from '../api/Database';
 
 function Chat() {
@@ -24,13 +25,11 @@ function Chat() {
     setMessages([...messages, message]);
     setNewMessage('');
 
-    // Call the OpenAI API
-    const response = await api.post('/engines/davinci-codex/completions', {
-      prompt: newMessage,
-      max_tokens: 60,
-    });
+    // Call the server-side route
+    const response = await fetch(`/api/completions?prompt=${encodeURIComponent(newMessage)}`);
+    const data = await response.json();
 
-    const botMessage = { content: response.data.choices[0].text, timestamp: new Date() };
+    const botMessage = { content: data.choices[0].text, timestamp: new Date() };
     setMessages((messages) => [...messages, botMessage]);
 
     // Save both messages to the database
