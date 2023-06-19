@@ -1,5 +1,3 @@
-// Chat.jsx
-
 import React, { useState, useEffect } from 'react';
 
 function Chat() {
@@ -52,3 +50,4 @@ function Chat() {
 }
 
 export default Chat;
+
